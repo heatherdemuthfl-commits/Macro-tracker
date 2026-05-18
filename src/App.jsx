@@ -93,15 +93,13 @@ export default function MacroTracker() {
     setLoading(true);
     setAiStatus("Looking up macros...");
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": import.meta.env.VITE_ANTHROPIC_KEY,
-          "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-direct-browser-access": "true",
-        },
-        body: JSON.stringify({
+      const res = await fetch("/api/lookup", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ food: foodText })
+});
+const parsed = await res.json();
+
           model: "claude-haiku-4-5-20251001",
           max_tokens: 200,
           messages: [{ role:"user", content:`You are a nutrition database. Given this food entry: "${foodText}" return ONLY a raw JSON object with no markdown and no explanation with these fields: name (string), protein (number in grams), carbs (number in grams), fat (number in grams), calories (number). Use accurate nutrition data.` }]
